@@ -260,6 +260,7 @@ class OFXClient:
         brokerid: Optional[str] = None,
         useragent: Optional[str] = None,
         persist_cookies: bool = True,
+        skip_profile_req: bool = False,
     ):
 
         self.url = url
@@ -290,6 +291,8 @@ class OFXClient:
             cj = http.cookiejar.CookieJar()
             opener = urllib_request.build_opener(urllib_request.HTTPCookieProcessor(cj))
             self.url_opener = opener.open
+
+        self.skip_profile_req = skip_profile_req
 
     @classproperty
     @classmethod
@@ -337,6 +340,8 @@ class OFXClient:
         """
         if dryrun:
             url = ""
+        elif self.skip_profile_req:
+            url = self.url
         else:
             RqCls2url = self._get_service_urls(
                 timeout=timeout,
