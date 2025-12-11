@@ -79,6 +79,17 @@ try:
 except ImportError:
     USE_REQUESTS = False
 
+# Never use the requests library (as the above code tries to do if it is
+# found). This is because Fidelity appears to need the Host HTTP header to
+# contain the port (i.e. ":443"). But the requests library strips port numbers
+# when they are the default port for the scheme (as ":443" is for URLs
+# beginning "https://"). While it is possible to force the requests library to
+# use a particular host by setting the "Host" header manually (in this case by
+# adding `"Host": "ofx.fidelity.com:443",` to the dictionary in the
+# http_headers method later in this file). It is much easier just to force the
+# use of the old urllib.request library instead of the newer requests library:
+USE_REQUESTS = False
+
 
 # local imports
 from ofxtools.header import make_header
